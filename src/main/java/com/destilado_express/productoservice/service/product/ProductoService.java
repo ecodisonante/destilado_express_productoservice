@@ -1,4 +1,4 @@
-package com.destilado_express.productoservice.service;
+package com.destilado_express.productoservice.service.product;
 
 import com.destilado_express.productoservice.model.Producto;
 import java.util.List;

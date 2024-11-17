@@ -2,12 +2,12 @@ package com.destilado_express.productoservice.controller;
 
 import java.util.List;
 import com.destilado_express.productoservice.model.Producto;
-import com.destilado_express.productoservice.service.ProductoService;
+import com.destilado_express.productoservice.service.auth.AuthService;
+import com.destilado_express.productoservice.service.product.ProductoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,16 +24,15 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private AuthService authService;
+
     // Obtener todos los productos
     @GetMapping
     public ResponseEntity<List<Producto>> obtenerTodosLosProductos() {
-        // Obtener correo y rol del usuario autenticado
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-
         List<Producto> productos;
-        if (isAdmin) {
+
+        if (authService.esAdmin()) {
             productos = productoService.getAllProductos();
         } else {
             productos = productoService.getProductosDisponibles();
@@ -45,15 +44,10 @@ public class ProductoController {
     // Obtener un producto por ID
     @GetMapping("/{id}")
     public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable Long id) {
-        // Obtener correo y rol del usuario autenticado
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
-
         Producto producto = productoService.getProductoById(id);
 
         // Si no esta disponible o el usuario no es ADMIN, retorna not found
-        if (producto != null && (producto.getDisponible() || isAdmin)) {
+        if (producto != null && (producto.getDisponible() || authService.esAdmin())) {
             return new ResponseEntity<>(producto, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
