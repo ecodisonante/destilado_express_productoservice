@@ -1,4 +1,4 @@
-package com.destilado_express.productoservice.service;
+package com.destilado_express.productoservice.service.product;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

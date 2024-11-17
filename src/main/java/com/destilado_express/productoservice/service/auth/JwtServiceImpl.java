@@ -1,4 +1,4 @@
-package com.destilado_express.productoservice.service;
+package com.destilado_express.productoservice.service.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
