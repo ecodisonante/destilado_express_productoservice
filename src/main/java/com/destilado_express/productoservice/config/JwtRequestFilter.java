@@ -3,6 +3,7 @@ package com.destilado_express.productoservice.config;
 import java.io.IOException;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +21,27 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@SuppressWarnings("null")
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    public JwtRequestFilter(JwtService jwtService) {
+        this.jwtService = jwtService;
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // Excluir de la validación del token
+        Map<String, String> ignoredRequests = Map.of(
+                "/api/productos", "GET" // listar productos
+        );
+
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        return ignoredRequests.containsKey(path) && ignoredRequests.get(path).equalsIgnoreCase(method);
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
