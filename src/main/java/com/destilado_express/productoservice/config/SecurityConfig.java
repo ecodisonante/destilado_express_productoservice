@@ -54,10 +54,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:*");
-        config.addAllowedOrigin("http://frontend:*");
+        config.addAllowedOrigin("http://localhost:4200");
+        config.addAllowedOrigin("http://frontend:4200");
         config.addAllowedHeader("*");
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
