@@ -20,6 +20,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     private JwtRequestFilter jwtRequestFilter; // Reutiliza o adapta el filtro de JWT
+    private String productosApi = "/api/productos";
+    private String adminRole = "ADMIN";
 
     @Autowired
     public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
@@ -34,15 +36,15 @@ public class SecurityConfig {
 
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
 
-                .authorizeHttpRequests((req) -> req
+                .authorizeHttpRequests(req -> req
                         // acceso publico
-                        .requestMatchers(HttpMethod.GET, "/api/productos").permitAll()
+                        .requestMatchers(HttpMethod.GET, productosApi).permitAll()
                         // solo registrados
-                        .requestMatchers(HttpMethod.GET, "/api/productos/**").authenticated() // No se usa!!
+                        .requestMatchers(HttpMethod.GET, productosApi + "/**").authenticated()
                         // solo admin
-                        .requestMatchers(HttpMethod.PUT, "/api/productos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/api/productos").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, productosApi).hasRole(adminRole)
+                        .requestMatchers(HttpMethod.POST, productosApi).hasRole(adminRole)
+                        .requestMatchers(HttpMethod.DELETE, productosApi + "/**").hasRole(adminRole)
                         // otros
                         .anyRequest().authenticated());
 
@@ -54,8 +56,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:4200");
-        config.addAllowedOrigin("http://frontend:4200");
+        config.addAllowedOriginPattern("http://localhost");
+        config.addAllowedOriginPattern("http://localhost:*");
+        config.addAllowedOriginPattern("http://frontend");
+        config.addAllowedOriginPattern("http://frontend:*");
         config.addAllowedHeader("*");
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 

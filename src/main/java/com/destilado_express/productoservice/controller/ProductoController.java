@@ -21,11 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/productos")
 public class ProductoController {
 
-    @Autowired
     private ProductoService productoService;
+    private AuthService authService;
 
     @Autowired
-    private AuthService authService;
+    public ProductoController(ProductoService productoService, AuthService authService) {
+        this.productoService = productoService;
+        this.authService = authService;
+    }
 
     // Obtener todos los productos
     @GetMapping

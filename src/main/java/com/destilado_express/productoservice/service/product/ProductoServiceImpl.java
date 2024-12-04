@@ -9,8 +9,12 @@ import com.destilado_express.productoservice.repository.ProductoRepository;
 @Service
 public class ProductoServiceImpl implements ProductoService {
 
-    @Autowired
     private ProductoRepository productoRepository;
+    
+    @Autowired
+    public ProductoServiceImpl(ProductoRepository productoRepository) {
+        this.productoRepository = productoRepository;
+    }
 
     public List<Producto> getAllProductos() {
         return productoRepository.findAll();
@@ -31,12 +35,8 @@ public class ProductoServiceImpl implements ProductoService {
     public Producto actualizarProducto(Long id, Producto productoActualizado) {
         Producto producto = productoRepository.findById(id).orElse(null);
         if (producto != null) {
-            producto.setNombre(productoActualizado.getNombre());
-            producto.setDescripcion(productoActualizado.getDescripcion());
-            producto.setPrecio(productoActualizado.getPrecio());
-            producto.setStock(productoActualizado.getStock());
-            producto.setDisponible(productoActualizado.getDisponible());
-            return productoRepository.save(producto);
+            productoActualizado.setId(producto.getId());
+            return productoRepository.save(productoActualizado);
         }
         return null;
     }
