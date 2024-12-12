@@ -42,12 +42,12 @@ public class Producto {
     }
 
     @PrePersist
-    protected void onCreate() {
+    public void onCreate() {
         this.fechaCreacion = LocalDateTime.now();
     }
 
     @PreUpdate
-    protected void onUpdate() {
+    public void onUpdate() {
         this.fechaActualizacion = LocalDateTime.now();
     }
 }
